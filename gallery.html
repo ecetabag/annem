@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Fotoğraf Galerisi</title>
+  <style>
+ .button-row {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .gallery-button,
+  .surprise-button {
+    display: inline-block;
+    padding: 12px 24px;
+    font-size: 18px;
+    border-radius: 30px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .gallery-button {
+    background-color: #ff7066;
+    color: white;
+  }
+
+  .gallery-button:hover {
+    background-color: #ff4033;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+  }
+
+  .surprise-button {
+    background-color: #cc0000;
+    color: white;
+  }
+
+  .surprise-button:hover {
+    background-color: #990000;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+  }
+    body {
+      font-family: 'Georgia', serif;
+      background-color: #fffaf8;
+      color: #333;
+      max-width: 1100px;
+      margin: 60px auto;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 30px;
+      font-size: 2em;
+    }
+
+    .gallery {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .gallery img {
+      width: 200px;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .gallery img:hover {
+      transform: scale(1.05);
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.9);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      max-width: 90%;
+      max-height: 90%;
+    }
+
+    .close, .prev, .next {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: white;
+      font-size: 40px;
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .close {
+      top: 20px;
+      right: 30px;
+      transform: none;
+    }
+
+    .prev {
+      left: 30px;
+    }
+
+    .next {
+      right: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Fotoğraf Galerisi</h1>
+
+  <div class="gallery" id="gallery">
+    <!-- Dynamically generated below -->
+  </div>
+
+  <div class="modal" id="modal">
+    <span class="close" id="closeBtn">&times;</span>
+    <span class="prev" id="prevBtn">&#10094;</span>
+    <img class="modal-content" id="modalImage">
+    <span class="next" id="nextBtn">&#10095;</span>
+  </div>
+
+<div class="button-row">
+  <a href="index.html" class="gallery-button">← Mektuba dön</a>
+  <a href="sertif.png" download class="surprise-button">🎁 Sürpriz Buton</a>
+</div>
+  <script>
+    const imageList = [
+      "1a.JPG", "2a.JPG", "6a.JPG", "10a.JPG", "11a.JPG", "12a.JPG", "13a.JPG", "14a.JPG", "15a.JPG",
+      "17a.JPG", "19a.JPG", "20a.JPG", "21a.JPG", "22a.JPG", "23a.JPG", "24a.JPG", "25a.JPG", "28a.JPG",
+      "29a.JPG", "30a.JPG", "31a.JPG", "32a.JPG", "33a.JPG", "34a.JPG", "35a.JPG", "36a.JPG", "40a.JPG",
+      "41a.JPG", "42a.JPG", "43a.JPG", "44a.JPG", "45a.jpg", "50a.jpg", "51a.jpg", "55a.jpg", "56a.JPG",
+      "57a.PNG", "58a.jpg", "60a.jpg", "61a.jpg", "62a.PNG", "63a.jpg", "64a.PNG", "65a.jpg", "66a.jpg",
+      "67a.jpg", "68a.JPG", "69a.JPG", "71a.JPG", "72a.png", "73a.jpg", "74a.JPG", "75a.JPG", "76a.JPG",
+      "77a.jpg", "78a.JPG", "79a.jpg", "80a.jpg", "81a.jpg", "82a.jpg", "83a.jpg", "84a.jpg", "85a.jpg",
+      "86a.jpg", "87a.jpg"
+    ];
+
+    const gallery = document.getElementById('gallery');
+    const modal = document.getElementById('modal');
+    const modalImg = document.getElementById('modalImage');
+    const closeBtn = document.getElementById('closeBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    let currentIndex = 0;
+
+    // Create gallery thumbnails
+    imageList.forEach((src, index) => {
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = "";
+      img.addEventListener('click', () => openModal(index));
+      gallery.appendChild(img);
+    });
+
+    function openModal(index) {
+      currentIndex = index;
+      modal.style.display = 'flex';
+      modalImg.src = imageList[currentIndex];
+    }
+
+    function closeModal() {
+      modal.style.display = 'none';
+    }
+
+    function showPrev() {
+      currentIndex = (currentIndex - 1 + imageList.length) % imageList.length;
+      modalImg.src = imageList[currentIndex];
+    }
+
+    function showNext() {
+      currentIndex = (currentIndex + 1) % imageList.length;
+      modalImg.src = imageList[currentIndex];
+    }
+
+    closeBtn.addEventListener('click', closeModal);
+    prevBtn.addEventListener('click', showPrev);
+    nextBtn.addEventListener('click', showNext);
+
+    // Close modal on outside click
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    // Arrow key navigation
+    document.addEventListener('keydown', (e) => {
+      if (modal.style.display === 'flex') {
+        if (e.key === 'ArrowLeft') showPrev();
+        else if (e.key === 'ArrowRight') showNext();
+        else if (e.key === 'Escape') closeModal();
+      }
+    });
+  </script>
+</body>
+</html>
